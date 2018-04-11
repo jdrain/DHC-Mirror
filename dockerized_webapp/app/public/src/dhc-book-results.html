@@ -354,7 +354,8 @@
 
             _addSavedQuery() {
                 console.log(this.user);
-                if (this.user !== undefined && this.user !== {}) {
+                if (this.user !== undefined && this.user !== {}
+                    && this.user.authenticated === true) {
                     var obj = {
                         _id: this.user._id,
                         keyword: "saved_searches",
@@ -368,13 +369,18 @@
 
                     this.$.updateSavedQueries.body = obj;
                     this.$.updateSavedQueries.generateRequest();
+                } 
+                else {
+                    this.dispatchEvent(new CustomEvent('open-saved-err-toast', 
+                        { bubbles: true, composed: true, detail: {}}
+                    ));
                 }
             }
 
             _addRecentQuery() {
                 // TODO: Add functionality for advanced 
                 console.log(this.user);
-                if (this.user !== undefined && this.user !== {}) {
+                if (this.user !== undefined && this.user !== {} && this.user.authenticated === true) {
                     var obj = {
                         _id: this.user._id,
                         keyword: "recent_searches",

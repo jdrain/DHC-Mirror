@@ -150,5 +150,7 @@ qstrings.createPublishedRelation = `MERGE ({pubname})-[:PUBLISHED]->({book})`;
 	  
 qstrings.createPublishesInRelation = `MERGE ({pubname})-[:PUBLISHES_IN]->({place})\n`;
 
+qstrings.singleNode = `MATCH (s) WHERE ID(s) = { id } RETURN s`;
+
 // exports
 module.exports = qstrings;

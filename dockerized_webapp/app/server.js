@@ -220,6 +220,8 @@ router.post("/update_saved_content/", function(req, res) {
     }
 
     // create the query doc
+    console.log(data._id);
+
     var querydoc = {
         _id: ObjectId(data._id)
     };
@@ -256,19 +258,41 @@ router.post("/update_saved_content/", function(req, res) {
 */
 router.post("/neo4j/single_node/", function(req, res) {
     var data = req.body;
+    console.log(qstrings.singleNode);
 
     var statement = qstrings.singleNode;
+    console.log(statement);
     var params = {};
 
     if (data.id !== undefined) {
-        params.id = data.id;
+        params.id = parseInt(data.id);
     }
 
     var q = neo4j.query(statement, params);
     q.response.then(function(resp) {
-        res.json(resp);
+        if (resp.record && resp.records.length > 0) {
+            resp.records.forEach(record => {
+                var record = record._fields[0];
+                if (record) {
+                    console.log(record.isbn);
+                    arr.push({
+                        id: record.id ? record.id.low : -1,
+                        isbn: record.isbn ? record.isbn : [],
+                        date: record.date ? record.date.low : '',
+                        title: record.title ? record.title : '',
+                        authors: record.authors ? record.authors : [],
+                        publishers: record.publishers ? record.publishers : []
+                    });
+                }
+            })
+            res.json( {records: arr} )
+        }
+        else {
+            res.json( {records: []})
+        }
     })
     .catch(function (err) {
+        console.log(err);
         res.json({error: "There was an error retrieving the id"});
     })
 })

@@ -41,6 +41,11 @@
                 padding-bottom: 24px;
                 text-align: center;
             }
+
+            paper-toast {
+                background-color: var(--paper-red-400);
+                color: white;
+            }
         </style>
 
         <data-login id="userData" user="{{user}}"></data-login>
@@ -63,6 +68,8 @@
         <paper-toast id="signInToast" text="Successfully Logged In!"></paper-toast>
         <paper-toast id="signOutToast" text="Successfully Logged Out!"></paper-toast>
         <paper-toast id="savedQToast" text="Query Saved!"></paper-toast>
+        <paper-toast id="savedQErrToast" text="You are not logged in. Please log in to save a query."></paper-toast>
+
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
@@ -113,9 +120,12 @@
 
             ready() {
                 super.ready();
+                // Handles events thrown throughout the application
                 this.addEventListener('update-user', (e) => this._onUpdateUserData(e));
                 this.addEventListener('send-user-data', (e) => this._onSendUserData(e));
                 this.addEventListener('open-saved-q-toast', (e) => this._openSavedQueryToast());
+                this.addEventListener('open-saved-err-toast', (e) => this._openSavedQueryErrToast());
+
             }
 
             connectedCallback() {
@@ -221,9 +231,9 @@
                             this.loadComplete = true;
                         })
 
-                        if ('serviceWorker' in navigator) {
-                            navigator.serviceWorker.register('service-worker.js', {scope: '/'});
-                        }
+                        // if ('serviceWorker' in navigator) {
+                        //     navigator.serviceWorker.register('service-worker.js', {scope: '/'});
+                        // }
                     })
                 }
             }
@@ -249,8 +259,11 @@
             }
 
             _openSavedQueryToast() {
-                console.log("Opening Toast")
                 this.$.savedQToast.open();
+            }
+
+            _openSavedQueryErrToast() {
+                this.$.savedQErrToast.open();
             }
         }
 

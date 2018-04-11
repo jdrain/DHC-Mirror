@@ -1,17 +1,18 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
 <link rel="import" href="frag-footer.html">
 <link rel="import" href="frag-header.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="dhc-book-profile">
     <template>
-        <style include = "shared-styles">
+        <style include="shared-styles">
           
             .container-profile{
                 display:flex;
@@ -143,6 +144,16 @@
                    pattern="/:id/:title"
                    data="{{bookUriData}}">
         </app-route>
+        
+        <iron-ajax
+             method="POST"
+             id="bookDataAjax"
+             url="/api/neo4j/single_node/"
+             handle-as="json"
+             content-type="application/json"
+             on-response="_singleBookResponse">
+        </iron-ajax>
+        
 
         <div class="container-profile">
             {{selectedbook}}
@@ -200,11 +211,32 @@
             }
             static get properties() {
                 return {
-                    selectedbook: {
+                    route: {
                         type: Object,
-                        notify: true
-                    }
+                        observer: "_routeChanged"
+                    },
+                    book: Object
                 }
+            }
+
+            _routeChanged() {
+                if (this.route.prefix.includes("book-profile")) {
+                    this._getBookData();
+                }
+            }
+
+            _getBookData() {
+                var bookId = this.bookUriData.id;
+                this.$.bookDataAjax.body = {
+                    id: bookId
+                }
+
+                this.$.bookDataAjax.generateRequest();
+            }
+
+            _singleBookResponse(resp) {
+                console.log(resp.detail.response);
+                this.set("book", resp.detail.response);
             }
         }
         window.customElements.define(dhcBookProfile.is, dhcBookProfile);
