@@ -1,5 +1,9 @@
 # DHC
 
+### Note:
+
+This is a mirror of the original repo since I can't make it public
+
 ## Setup  
 
 If you have not already, clone the repo to get the source code. 
