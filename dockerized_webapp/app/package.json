@@ -27,7 +27,7 @@
         "marc-record-converters": "^1.0.0",
         "marc4js": "0.0.8",
         "mocha": "^5.0.0",
-        "moment": "2.20.1",
+        "moment": "2.29.4",
         "mongodb": "^2.2.31",
         "mongoose": "^4.12.1",
         "neo4j-driver": "^1.5.0",
